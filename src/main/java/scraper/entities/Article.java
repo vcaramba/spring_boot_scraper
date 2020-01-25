@@ -1,10 +1,10 @@
-package entities;
+package scraper.entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RawArticleEntity {
-    private final String key;
+public class Article {
+    private final int key;
     private final String url;
     private final String title;
     private final String publishedDate;
@@ -12,8 +12,8 @@ public class RawArticleEntity {
     private final String author;
 
     @JsonCreator
-    public RawArticleEntity(
-            @JsonProperty("key") String key,
+    public Article(
+            @JsonProperty("key") int key,
             @JsonProperty("url") String url,
             @JsonProperty("title") String title,
             @JsonProperty("publishedDate") String publishedDate,
@@ -27,7 +27,7 @@ public class RawArticleEntity {
         this.author = author;
     }
 
-    public String getKey() {
+    public int getKey() {
         return key;
     }
 
@@ -49,5 +49,17 @@ public class RawArticleEntity {
 
     public String getAuthor() {
         return author;
+    }
+
+    @Override
+    public String toString() {
+        return "RawArticleEntity{" +
+                "key='" + key + '\'' +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", publishedDate='" + publishedDate + '\'' +
+                ", description='" + description + '\'' +
+                ", author='" + author + '\'' +
+                '}';
     }
 }

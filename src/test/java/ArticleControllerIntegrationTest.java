@@ -1,5 +1,4 @@
-import app.ScraperApplication;
-import entities.ParsedArticleEntity;
+import scraper.ScraperApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +7,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.HttpClientErrorException;
+import scraper.entities.Article;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ScraperApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,7 +25,7 @@ public class ArticleControllerIntegrationTest {
     }
 
     @Test
-    public void testGetAllListings() {
+    public void testGetAllArticles() {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
@@ -35,50 +33,55 @@ public class ArticleControllerIntegrationTest {
                 HttpMethod.GET, entity, String.class);
 
         assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FOUND, response.getStatusCode());
     }
 
     @Test
-    public void testGetListingById() {
-        ParsedArticleEntity parsedArticleEntity = restTemplate.getForObject(getRootUrl() + "/articles/1", ParsedArticleEntity.class);
-        assertNotNull(parsedArticleEntity);
-    }
-
-    @Test
-    public void testCreateParsedListing() {
-        ParsedArticleEntity parsedArticleEntity = new ParsedArticleEntity("key", "http://url.com", "title",
-                "date", "publishedDate", "mapLink", "author");
-
-        ResponseEntity<ParsedArticleEntity> postResponse = restTemplate.postForEntity(getRootUrl() + "/articles",
-                parsedArticleEntity, ParsedArticleEntity.class);
-        assertNotNull(postResponse);
-        assertNotNull(postResponse.getBody());
-    }
-
-    @Test
-    public void testUpdateParsedListing() {
+    public void testGetArticleById() {
         int id = 1;
-        ParsedArticleEntity parsedArticleEntity = restTemplate.getForObject(getRootUrl() + "/articles/" + id, ParsedArticleEntity.class);
-        parsedArticleEntity.setTitle("title1");
-        parsedArticleEntity.setAuthor("author2");
-
-        restTemplate.put(getRootUrl() + "/articles/" + id, parsedArticleEntity);
-
-        ParsedArticleEntity updatedParsedArticleEntity = restTemplate.getForObject(getRootUrl() + "/articles/" + id, ParsedArticleEntity.class);
-        assertNotNull(updatedParsedArticleEntity);
+        restTemplate.getForObject(getRootUrl() + "/articles/" + id, Article.class);
+        ResponseEntity<Article> postResponse = restTemplate.getForEntity(getRootUrl() + "/articles/" + id,
+                Article.class);
+        assertEquals(HttpStatus.FOUND, postResponse.getStatusCode());
     }
 
     @Test
-    public void testDeleteParsedListing() {
+    public void testCreateArticle() {
+        Article article = new Article(123, "http://url.com", "title",
+                "date", "publishedDate", "author");
+
+        ResponseEntity<Article> postResponse = restTemplate.postForEntity(getRootUrl() + "/articles",
+                article, Article.class);
+        assertEquals(HttpStatus.CREATED, postResponse.getStatusCode());
+    }
+
+//    @Test
+//    public void testUpdateArticle() {
+//        int id = 1;
+//        ParsedArticleEntity parsedArticleEntity = restTemplate.getForObject(getRootUrl() + "/articles/" + id, ParsedArticleEntity.class);
+//        parsedArticleEntity.setTitle("title1");
+//        parsedArticleEntity.setAuthor("author2");
+//
+//        restTemplate.put(getRootUrl() + "/articles/" + id, parsedArticleEntity);
+//
+//        restTemplate.getForObject(getRootUrl() + "/articles/" + id, ParsedArticleEntity.class);
+//        ResponseEntity<ParsedArticleEntity> postResponse = restTemplate.getForEntity(getRootUrl() + "/articles/" + id,
+//                ParsedArticleEntity.class);
+//        assertEquals(postResponse.getStatusCode(), HttpStatus.FOUND);
+//    }
+
+    @Test
+    public void testDeleteArticle() {
         int id = 2;
-        ParsedArticleEntity parsedArticleEntity = restTemplate.getForObject(getRootUrl() + "/articles/" + id, ParsedArticleEntity.class);
-        assertNotNull(parsedArticleEntity);
+        restTemplate.getForObject(getRootUrl() + "/articles/" + id, Article.class);
+        ResponseEntity<Article> postResponse = restTemplate.getForEntity(getRootUrl() + "/articles/" + id,
+                Article.class);
+        assertEquals(HttpStatus.FOUND, postResponse.getStatusCode());
 
         restTemplate.delete(getRootUrl() + "/articles/" + id);
 
-        try {
-            restTemplate.getForObject(getRootUrl() + "/articles/" + id, ParsedArticleEntity.class);
-        } catch (final HttpClientErrorException e) {
-            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
-        }
+        postResponse = restTemplate.getForEntity(getRootUrl() + "/articles/" + id,
+                Article.class);
+        assertEquals(HttpStatus.NOT_FOUND, postResponse.getStatusCode());
     }
 }

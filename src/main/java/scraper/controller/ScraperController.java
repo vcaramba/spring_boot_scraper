@@ -1,9 +1,10 @@
-package controller;
+package scraper.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import scrape.Scraper;
+import scraper.entities.Article;
+import scraper.scrape.Scraper;
 
 import java.util.List;
 
@@ -17,7 +18,13 @@ public class ScraperController {
     }
 
     @RequestMapping("/scrape")
-    public List<String> index() {
-        return scraper.getScrapedArticles();
+    public List<Article> scrapeArticles() {
+        scraper.scrapeArticles();
+        return scraper.getAllArticles();
+    }
+
+    @RequestMapping("/last_10")
+    public List<Article> getLastTenArticles() {
+        return scraper.getLastTenArticles();
     }
 }
