@@ -1,24 +1,17 @@
 package scraper.entities;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Article {
-    private final int key;
-    private final String url;
-    private final String title;
-    private final String publishedDate;
-    private final String description;
-    private final String author;
+    private int key;
+    private String url;
+    private String title;
+    private String publishedDate;
+    private String description;
+    private String author;
 
-    @JsonCreator
-    public Article(
-            @JsonProperty("key") int key,
-            @JsonProperty("url") String url,
-            @JsonProperty("title") String title,
-            @JsonProperty("publishedDate") String publishedDate,
-            @JsonProperty("description") String description,
-            @JsonProperty("author") String author) {
+    public Article() {
+    }
+
+    public Article(int key, String url, String title, String publishedDate, String description, String author) {
         this.key = key;
         this.url = url;
         this.title = title;
@@ -31,35 +24,47 @@ public class Article {
         return key;
     }
 
+    public void setKey(int key) {
+        this.key = key;
+    }
+
     public String getUrl() {
         return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getPublishedDate() {
         return publishedDate;
+    }
+
+    public void setPublishedDate(String publishedDate) {
+        this.publishedDate = publishedDate;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getAuthor() {
         return author;
     }
 
-    @Override
-    public String toString() {
-        return "RawArticleEntity{" +
-                "key='" + key + '\'' +
-                ", url='" + url + '\'' +
-                ", title='" + title + '\'' +
-                ", publishedDate='" + publishedDate + '\'' +
-                ", description='" + description + '\'' +
-                ", author='" + author + '\'' +
-                '}';
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

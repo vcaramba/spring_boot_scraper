@@ -15,6 +15,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 
 @Configuration
@@ -42,7 +43,7 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         try {
             Resource resource = resourceLoader.getResource("classpath:data.sql");
-            String initializeSql = IOUtils.toString(resource.getInputStream());
+            String initializeSql = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
 
             ComboPooledDataSource dataSource = new ComboPooledDataSource();
             dataSource.setDriverClass(dataSourceDriver);
