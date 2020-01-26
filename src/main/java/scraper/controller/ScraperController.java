@@ -2,7 +2,7 @@ package scraper.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import scraper.entities.Article;
+import scraper.model.Article;
 import scraper.service.ScraperServiceImpl;
 
 import java.util.List;

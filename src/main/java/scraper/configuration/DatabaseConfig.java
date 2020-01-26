@@ -1,4 +1,4 @@
-package scraper.repository;
+package scraper.configuration;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.io.IOUtils;

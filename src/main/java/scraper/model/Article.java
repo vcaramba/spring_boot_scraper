@@ -1,4 +1,4 @@
-package scraper.entities;
+package scraper.model;
 
 public class Article {
     private int key;

@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.object.SqlUpdate;
 import org.springframework.stereotype.Repository;
-import scraper.entities.Article;
+import scraper.model.Article;
 
 import java.sql.Types;
 import java.util.HashSet;
@@ -42,13 +42,13 @@ public class ArticleRepository {
     }
 
     public void createArticle(Article article) {
-//        String checkIfEntryExistsSql = "SELECT count(*) from ARTICLES WHERE key = ?";
-//        Integer entriesAmount = jdbcTemplate.queryForObject(checkIfEntryExistsSql, Integer.class, article.getKey());
-//        if (entriesAmount == 0) {
+        String checkIfEntryExistsSql = "SELECT count(*) from ARTICLES WHERE key = ?";
+        Integer entriesAmount = jdbcTemplate.queryForObject(checkIfEntryExistsSql, Integer.class, article.getKey());
+        if (entriesAmount == 0) {
             jdbcTemplate.update(INSERT_ARTICLE, article.getKey(), article.getUrl(),
                     article.getTitle(), article.getPublishedDate(),
                     article.getDescription(), article.getAuthor());
-//        }
+        }
     }
 
     public List<Article> getAllArticles() {

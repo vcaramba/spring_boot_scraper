@@ -1,6 +1,6 @@
 package scraper.service;
 
-import scraper.entities.Article;
+import scraper.model.Article;
 
 import java.util.List;
 

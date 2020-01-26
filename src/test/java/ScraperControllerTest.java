@@ -14,7 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import scraper.ScraperApplication;
 import scraper.controller.ScraperController;
-import scraper.entities.Article;
+import scraper.model.Article;
 
 import java.util.List;
 

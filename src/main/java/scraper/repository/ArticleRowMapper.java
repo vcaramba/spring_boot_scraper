@@ -1,7 +1,7 @@
 package scraper.repository;
 
 import org.springframework.jdbc.core.RowMapper;
-import scraper.entities.Article;
+import scraper.model.Article;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
