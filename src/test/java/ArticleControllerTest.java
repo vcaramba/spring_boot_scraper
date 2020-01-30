@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import scraper.ScraperApplication;
+import scraper.controller.ArticleController;
 import scraper.controller.ScraperController;
 import scraper.model.Article;
 
@@ -23,10 +24,13 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ScraperApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ScraperControllerTest {
+public class ArticleControllerTest {
 
     @Autowired
-    private ScraperController controller;
+    private ArticleController articleController;
+
+    @Autowired
+    private ScraperController scraperController;
 
     @LocalServerPort
     private int port;
@@ -46,19 +50,20 @@ public class ScraperControllerTest {
                 HttpMethod.GET, entity, String.class);
 
         if (new JSONArray(response.getBody()).length() == 0) {
-            controller.scrape();
+            scraperController.getScraperService().scrapeArticles();
         }
     }
 
     @Test
     public void testGetAllArticles() throws JSONException {
-        List<Article> articles = controller.getAllArticles();
+        List<Article> articles = articleController.getArticles();
 
         ResponseEntity<String> response = restTemplate.exchange(getRootUrl() + "/articles",
                 HttpMethod.GET, entity, String.class);
 
         assertEquals(articles.size(), new JSONArray(response.getBody()).length());
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(10, new JSONArray(response.getBody()).length());
     }
 
     @Test
@@ -73,33 +78,17 @@ public class ScraperControllerTest {
         assertEquals(HttpStatus.OK, getResponse.getStatusCode());
     }
 
-    @Test
-    public void testGetLastTenArticles() throws JSONException {
-        List<Article> articles = controller.getLastTenArticles();
-
-        ResponseEntity<String> response = restTemplate.exchange(getRootUrl() + "/articles/last_10",
-                HttpMethod.GET, entity, String.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(articles.size(), new JSONArray(response.getBody()).length());
-        assertEquals(10, new JSONArray(response.getBody()).length());
-    }
 
     @Test
     public void testDeleteArticle() throws JSONException {
         ResponseEntity<String> getResponse = restTemplate.exchange(getRootUrl() + "/articles",
                 HttpMethod.GET, entity, String.class);
 
-        int initialArticlesAmount = new JSONArray(getResponse.getBody()).length();
         JSONObject firstArticle = new JSONArray(getResponse.getBody()).getJSONObject(0);
 
         ResponseEntity<String> deleteResponse = restTemplate.exchange(getRootUrl() + "/articles/" + firstArticle.get("key"),
                 HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
-
-        getResponse = restTemplate.exchange(getRootUrl() + "/articles",
-                HttpMethod.GET, entity, String.class);
-        assertEquals(initialArticlesAmount - 1, new JSONArray(getResponse.getBody()).length());
     }
 
     @Test
@@ -118,8 +107,8 @@ public class ScraperControllerTest {
 
     @Test
     public void testUpdateArticle() {
-        List<Article> articles = controller.getLastTenArticles();
-        ResponseEntity<String> getResponse = restTemplate.exchange(getRootUrl() + "/articles/last_10",
+        List<Article> articles = articleController.getArticles();
+        ResponseEntity<String> getResponse = restTemplate.exchange(getRootUrl() + "/articles",
                 HttpMethod.GET, entity, String.class);
 
         assertEquals(HttpStatus.OK, getResponse.getStatusCode());
@@ -129,8 +118,9 @@ public class ScraperControllerTest {
                 Article.class);
         article.setTitle(RandomStringUtils.randomAlphanumeric(20));
 
-        ResponseEntity<Article> putResponse = restTemplate.exchange(getRootUrl() + "/articles/" + article.getKey() +
-                "/title=" + article.getTitle(), HttpMethod.PUT, entity, Article.class);
+        ResponseEntity<Article> putResponse =
+                restTemplate.exchange(getRootUrl() + "/articles/update/",
+                HttpMethod.PUT, entity, Article.class);
         assertEquals(HttpStatus.OK, putResponse.getStatusCode());
 
         Article updatedArticle = restTemplate.getForObject(getRootUrl() + "/articles/" + tenthArticleKey,

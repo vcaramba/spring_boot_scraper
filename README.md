@@ -14,8 +14,7 @@ Access in-memory DB:
 3. user: sa, empty password
 
 Endpoints:
-1. **/scrape_scheduled**: scrape articles from RSS feed (scheduled task with delay 10 sec)
-2. **/articles/last_10**: get last 10 articles (sorted by article id) from the in-memory database
-3. **/articles**: get all scraped articles from the in-memory database
-4. **/articles/id**: get article by id
+1. **/scrape**: scrape articles from RSS feed (scheduled task with delay 10 sec)
+2. **/articles**: get last 10 articles (sorted by article id) from the in-memory database
+3. **/articles/id**: get article by id
 

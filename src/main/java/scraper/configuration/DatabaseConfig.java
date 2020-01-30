@@ -32,15 +32,11 @@ public class DatabaseConfig {
     @Value("${spring.datasource.driver-class-name}")
     private String dataSourceDriver;
     private DataSource dataSource;
+    @Autowired
     private ResourceLoader resourceLoader;
 
-    @Autowired
-    public DatabaseConfig(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
-
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource() throws Exception {
         try {
             Resource resource = resourceLoader.getResource("classpath:data.sql");
             String initializeSql = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
@@ -59,14 +55,14 @@ public class DatabaseConfig {
 
             connection.prepareStatement(initializeSql).execute();
         } catch (Exception e) {
-            e.printStackTrace();
-            dataSource = null;
+            LOGGER.info(e.getMessage());
+            throw new Exception();
         }
         return dataSource;
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() {
+    public JdbcTemplate jdbcTemplate() throws Exception {
         return new JdbcTemplate(dataSource());
     }
 }
